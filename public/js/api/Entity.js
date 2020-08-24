@@ -10,7 +10,9 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static list( data, callback = f => f ) {
-
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    //что надо сделать я не понимаю! У нас уже есть createRequest, зачем тут  снова get запрос? что делать с data? Что вообще происходит. Описание будто создавалось для того кто уже все сделал
   }
 
   /**
