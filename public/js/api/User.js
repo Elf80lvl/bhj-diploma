@@ -4,12 +4,17 @@
  * Имеет свойство URL, равное '/user'.
  * */
 class User {
+
+  static url = '/user';
   /**
    * Устанавливает текущего пользователя в
    * локальном хранилище.
    * */
   static setCurrent(user) {
-
+    localStorage.user = {
+      id: user.id,
+      name: user.name
+    }
   }
 
   /**
@@ -17,7 +22,7 @@ class User {
    * пользователе из локального хранилища.
    * */
   static unsetCurrent() {
-
+    localStorage.removeItem('user');
   }
 
   /**
@@ -25,7 +30,10 @@ class User {
    * из локального хранилища
    * */
   static current() {
-
+    if (localStorage.user) {
+      return JSON.parse(localStorage.user);
+    }
+    return undefined; 
   }
 
   /**
@@ -33,6 +41,7 @@ class User {
    * авторизованном пользователе.
    * */
   static fetch( data, callback = f => f ) {
+    //return createRequest({})
 
   }
 
@@ -52,7 +61,32 @@ class User {
    * сохранить пользователя через метод
    * User.setCurrent.
    * */
+  // const data = {
+  //   name: 'Vlad',
+  //   email: 'test@test.ru',
+  //   password: 'abracadabra'
+  // }
   static register( data, callback = f => f ) {
+    try {
+      let xhr = createRequest({
+        url: this.url + '/register',
+        data: {email: data.email, password: data.password},
+        responseType: 'json',
+        method: 'PUT'
+      });
+
+    } catch(error) {
+      let err = error;
+    }
+
+
+    //После регистрации установите в случае успешного ответа полученного пользователя с помощью метода User.setCurrent
+    user.setCurrent({
+      id: 1,//где взять id
+      name: data.name
+    });
+
+    return xhr;
 
   }
 

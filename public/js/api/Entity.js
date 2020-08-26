@@ -4,15 +4,19 @@
  * */
 class Entity {
 
+  static url = '';
+
   /**
    * Запрашивает с сервера список данных.
    * Это могут быть счета или доходы/расходы
    * (в зависимости от того, что наследуется от Entity)
    * */
   static list( data, callback = f => f ) {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    //что надо сделать я не понимаю! У нас уже есть createRequest, зачем тут  снова get запрос? что делать с data? Что вообще происходит. Описание будто создавалось для того кто уже все сделал
+    return createRequest({
+      data: data,
+      responseType: 'json',
+      method: 'GET'
+      });
   }
 
   /**
@@ -21,7 +25,12 @@ class Entity {
    * что наследуется от Entity)
    * */
   static create( data, callback = f => f ) {
-
+    let modifiedData = Object.assign({ _method: 'PUT' }, data );
+    return createRequest({
+      data: modifiedData,
+      responseType: 'json',
+      method: 'PUT'
+      });
   }
 
   /**
@@ -29,7 +38,11 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static get( id = '', data, callback = f => f ) {
-
+    return createRequest({
+      data: data,
+      responseType: 'json',
+      method: 'GET'
+      });
   }
 
   /**
@@ -37,7 +50,12 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static remove( id = '', data, callback = f => f ) {
-
+    let modifiedData = Object.assign({ _method: 'DELETE', id: id }, data );
+    return createRequest({
+      data: modifiedData,
+      responseType: 'json',
+      method: 'DELETE'
+      });
   }
 }
 
