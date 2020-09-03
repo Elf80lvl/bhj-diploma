@@ -1,3 +1,5 @@
+//import { response } from "express";
+
 /**
  * Класс User управляет авторизацией, выходом и
  * регистрацией пользователя из приложения
@@ -11,10 +13,7 @@ class User {
    * локальном хранилище.
    * */
   static setCurrent(user) {
-    localStorage.user = {
-      id: user.id,
-      name: user.name
-    }
+    localStorage.user = JSON.stringify(user);
   }
 
   /**
@@ -33,7 +32,7 @@ class User {
     if (localStorage.user) {
       return JSON.parse(localStorage.user);
     }
-    return undefined; 
+    //return undefined; 
   }
 
   /**
@@ -41,7 +40,20 @@ class User {
    * авторизованном пользователе.
    * */
   static fetch( data, callback = f => f ) {
-    //return createRequest({})
+    return createRequest({
+      url: this.url + '/current',
+      method: 'GET',
+      responseType: 'json',
+      data: data,
+      callback: (err, response) => {
+        if (response.user) { //Если в результате есть данные об авторизованном пользователе, необходимо обновить данные текущего пользователя (для этого вызывайте метод setCurrent)
+          this.setCurrent(response.user);
+        } else { //Если данных о пользователе нет (success = false), необходимо удалить запись об авторизации (для этого вызывайте метод unsetCurrent)
+          this.unsetCurrent();
+        }
+        callback(err, response);
+      }
+    })
 
   }
 
@@ -52,6 +64,18 @@ class User {
    * User.setCurrent.
    * */
   static login( data, callback = f => f ) {
+    return createRequest({
+      url: this.url + '/login',
+      method: 'POST',
+      responseType: 'json',
+      data: data,
+      callback: (err, response) => {
+        if (response.user && (response.success === true)) {
+          User.setCurrent(response.user);
+        }
+        callback(err, response);
+      }
+    })
 
   }
 
@@ -67,27 +91,18 @@ class User {
   //   password: 'abracadabra'
   // }
   static register( data, callback = f => f ) {
-    try {
-      let xhr = createRequest({
-        url: this.url + '/register',
-        data: {email: data.email, password: data.password},
-        responseType: 'json',
-        method: 'PUT'
-      });
-
-    } catch(error) {
-      let err = error;
-    }
-
-
-    //После регистрации установите в случае успешного ответа полученного пользователя с помощью метода User.setCurrent
-    user.setCurrent({
-      id: 1,//где взять id
-      name: data.name
-    });
-
-    return xhr;
-
+    return createRequest({
+      url: this.url + '/register',
+      method: 'POST',
+      responseType: 'json',
+      data: data,
+      callback: (err, response) => {
+        if (response.user && (response.success === true)) {
+          User.setCurrent(response.user); //После регистрации установите в случае успешного ответа полученного пользователя с помощью метода User.setCurrent
+        }
+        callback(err, response);
+      }
+    })
   }
 
   /**
@@ -95,6 +110,19 @@ class User {
    * выхода необходимо вызвать метод User.unsetCurrent
    * */
   static logout( data, callback = f => f ) {
+    return createRequest({
+      url: this.url + '/logout',
+      method: 'POST',
+      responseType: 'json',
+      data: data,
+      callback: (err, response) => {
+        if (response.user && (response.success === true)) {
+          User.unsetCurrent(); //После успешного выхода необходимо вызвать метод User.unsetCurrent.
+        }
+        callback(err, response);
+      }
+    })
+
 
   }
 }

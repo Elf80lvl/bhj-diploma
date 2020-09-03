@@ -6,53 +6,50 @@
  * */
 
 //https://github.com/netology-code/bhj-diploma/blob/master/md/api.md
-const createRequest = (options = {
-  url: url,
-  headers: {},
-  data: {email:email, password:password},
-  responseType: responseType,
-  method: method,
-  callback: callback
-}) => {
-  let errorrr, response, finalXhr;
-  
+const createRequest = (options = {}) => {
+  let xhr = new XMLHttpRequest();
+  let formData = new formData();
+
+  xhr.responseType = options.responseType;
+  xhr.withCredentials = true;
+
+  //При параметре method = GET, данные из объекта data должны передаваться в строке адреса
   if (options.method === 'GET') {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = options.responseType;
-    xhr.withCredentials = true;
-    try {
-      xhr.open('GET', options.url + `?mail=${options.data.email}&password=${options.data.password}`);
-      xhr.send();
-      response = xhr.response;
-      finalXhr = xhr;
-    } catch (error) {
-      errorrr = error;
+    options.url = options.url + '?';
+    for (let elem in options.data) {
+      options.url = options.url + `${elem}=${options.data[elem]}&`;
     }
-    options.callback(errorrr, response);
-    console.log(finalXhr);
-    return finalXhr;
-    
+    //При параметре method отличном от GET, данные из объекта data должны передаваться через объект FormData
   } else {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = options.responseType;
-    xhr.withCredentials = true;
-    formData = new FormData();
-    formData.append('mail', options.data.email);
-    formData.append('password', options.data.password);
-    try {
-      xhr.open('POST', options.url);
-      xhr.send(formData);
-      response = xhr.response;
-      finalXhr = xhr;
-    } catch (error) {
-      errorrr = error;
+    for (let elem in options.data) {
+      formData.append(elem, options.data[elem]);
     }
-    options.callback(errorrr, response);
-    console.log(finalXhr);
-    return finalXhr;
   }
 
+  //В случае успешного выполнения кода, необходимо вызвать функцию, заданную в callback и передать туда данные
+  xhr.onload = () => {
+    let response = xhr.response;
+    options.callback(null, response);
+    console.log(response);
+  }
+
+  xhr.open(options.method, options.url);
+
+  //В случае, если в процессе выполнения функции возникают ошибки, вам необходимо передать эту ошибку в параметр err
+  try {
+    xhr.send(formData);
+  } catch(err) {
+    callback(err);
+  }
+  
+  return xhr;
+
 };
+
+
+
+
+
 
 
 const xhr = createRequest({
