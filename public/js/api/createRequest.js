@@ -10,15 +10,17 @@ const createRequest = (options = {}) => {
   let xhr = new XMLHttpRequest();
 	let formData = new FormData;
 
-	xhr.responseType = options.responseType;
+  xhr.responseType = options.responseType;
+  //У возвращаемого объекта всегда свойство withCredentials задано в true
 	xhr.withCredentials = true;
 
+  //При параметре method = GET, данные из объекта data должны передаваться в строке адреса.
 	if (options.method === "GET") {
 		options.url += "?";
 		for (let item in options.data) {
 			options.url += `${item}=${options.data[item]}&`;
 		}
-	} else {
+	} else { //При параметре method отличном от GET, данные из объекта data должны передаваться через объект FormData
 		for (let item in options.data) {
 			formData.append(item, options.data[item]);
 		}
@@ -27,8 +29,8 @@ const createRequest = (options = {}) => {
 	xhr.addEventListener("readystatechange", function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			let response = xhr.response;
-			options.callback(null, response);
-			console.log(response);
+			options.callback(null, response); //В случае успешного выполнения кода, необходимо вызвать функцию, заданную в callback и передать туда данные
+			//console.log(response);
 		}
 	})
 
@@ -37,7 +39,7 @@ const createRequest = (options = {}) => {
 	try {
 		xhr.send(formData);
 	} catch (err) {
-		callback(err);
+		callback(err); //В случае, если в процессе выполнения функции возникают ошибки, вам необходимо передать эту ошибку в параметр err
 	}
 
 	return xhr
