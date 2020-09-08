@@ -6,6 +6,13 @@
       "password": "demo",
       "id": "1",
       "isAuthorized": false
+    },
+    {
+      "name": "one",
+      "email": "one@gmail.com",
+      "password": "one",
+      "id": "62w4jv9qkketp9lhw",
+      "isAuthorized": true
     }
   ],
   "accounts": [
@@ -23,6 +30,11 @@
       "name": "Бизнес",
       "user_id": "1",
       "id": "3"
+    },
+    {
+      "name": "rt",
+      "user_id": "62w4jv9qkketp9lhw",
+      "id": "62w4jv614ketpyth7"
     }
   ],
   "transactions": [
@@ -160,6 +172,22 @@
       "sum": 300000,
       "type": "expense",
       "user_id": "1"
+    },
+    {
+      "id": "62w4jvaksketpz21g",
+      "type": "INCOME",
+      "name": "dfg",
+      "sum": 70,
+      "account_id": "62w4jv614ketpyth7",
+      "created_at": "2020-09-08T08:56:19.731Z"
+    },
+    {
+      "id": "62w4jvb6oketpz6yh",
+      "type": "EXPENSE",
+      "name": "gh",
+      "sum": 10,
+      "account_id": "62w4jv614ketpyth7",
+      "created_at": "2020-09-08T08:56:26.104Z"
     }
   ]
 }

@@ -11,7 +11,10 @@ class UserWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
-
+      if (!element) {
+        throw new Error("element not found. UserWidget");
+      }
+      this.element = element;
   }
 
   /**
@@ -22,6 +25,10 @@ class UserWidget {
    * авторизованного пользователя
    * */
   update() {
-
+    let currentUser = User.current();
+		if (currentUser) {
+			document.getElementsByClassName("user-name")[0].textContent = currentUser.name;
+    }
+    
   }
 }
